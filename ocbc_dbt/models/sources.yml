@@ -1,22 +1,17 @@
 version: 2
 
-# Raw CSV files in solution/part_2/dataset/. DuckDB auto-detects the column types.
-# Paths are relative to the working directory: run dbt from solution/part_2/.
 sources:
   - name: raw
     tables:
       - name: profile
-        description: One row per customer (100 customers).
         config:
           meta:
             external_location: "dataset/profile.csv"
       - name: porto
-        description: Portfolio snapshot, one row per customer x product.
         config:
           meta:
             external_location: "dataset/porto.csv"
       - name: transaction
-        description: Not used by any model (no product column; fees too small to rank products).
         config:
           meta:
             external_location: "dataset/transaction.csv"
