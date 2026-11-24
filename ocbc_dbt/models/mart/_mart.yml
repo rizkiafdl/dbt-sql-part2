@@ -15,7 +15,7 @@ models:
         data_tests: [unique]
 
   - name: fct_revenue_by_product
-    description: Q1. Total balance per (product_category, product). Same assumption as fct_revenue_by_category.
+    description: Q1. Total balance per (product_category, product), ranked across all products (balance_rank) and inside each category (rank_in_category). Same assumption as fct_revenue_by_category.
     data_tests:
       - unique:
           arguments:

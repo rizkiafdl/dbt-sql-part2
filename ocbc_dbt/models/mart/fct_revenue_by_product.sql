@@ -1,6 +1,7 @@
 -- Q1 answer at product level. Grain is (product_category, product), never product alone:
 -- GIRO, GIROSYARIAH and MULTI CURRENCY exist in both FUNDING and LOAN.
 -- Same measure and holders rule as fct_revenue_by_category.
+-- balance_rank ranks across all products (the Q1 product answer); rank_in_category ranks inside one category.
 with by_product as (
     select
         product_category,
@@ -17,7 +18,8 @@ select
     holders,
     total_balance,
     round(100 * total_balance / sum(total_balance) over (), 1)                                as share_pct,
+    rank() over (order by total_balance desc)                                                 as balance_rank,
     round(100 * total_balance / sum(total_balance) over (partition by product_category), 1)   as share_in_category_pct,
     rank() over (partition by product_category order by total_balance desc)                   as rank_in_category
 from by_product
-order by product_category, rank_in_category
+order by balance_rank

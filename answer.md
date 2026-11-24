@@ -4,23 +4,18 @@
 
 ### Answer
 
-**LOAN is the biggest contributor to revenue: 66.1 % of total balance (Rp 1,582.5 Bn).** Within LOAN, three products lead: **TERM LOAN** (Rp 318.1 Bn), **DEMAND LOAN** (Rp 290.4 Bn) and **PIF-FLOATING** (Rp 212.2 Bn).
+- **Category: LOAN**, with 66.1 % of the total balance (Rp 1,582.5 Bn).
+- **Product: MULTI CURRENCY** (FUNDING), with 22.4 % of the total balance (Rp 535.8 Bn).
 
-### Assumption: balance as the revenue measure
+### How I measure revenue
 
-The data has no revenue column. A bank earns revenue as a margin on the balances it manages: interest on loans, a spread on deposits, and fees on investment products. So:
+The data has no revenue or margin column. A bank earns revenue as a margin on balances, so I assume **every product earns the same margin**. Then revenue follows the balance (the sum of `porto.amount`), and the biggest balance is the biggest contributor.
 
-> **Revenue = balance × margin.**
+A holder is a customer with a balance above 0 in the product. Q2 uses the same rule.
 
-The margin per product is not in the data. I assume **an equal margin for every product**. Under this assumption, revenue is proportional to balance, and the product with the largest balance is the largest revenue contributor.
+The transaction table can't measure revenue. It has no product column (`transaction_method` is the channel), and its fee and penalty rows (`BIAYA` + `DENDA`, about Rp 7.2 jt) are tiny next to Rp 2,394 Bn of balance.
 
-The measure is **total balance** = the sum of `porto.amount` over all products. It is not AUM: AUM counts only the money customers place with the bank (deposits and investments) and excludes loans.
-
-**Why the conclusion is robust:** LOAN is more than 2× larger than FUNDING. In real banking, loans usually earn the highest margin per rupiah. So the equal-margin assumption, if anything, understates LOAN's lead. The answer holds under realistic margins too.
-
-**Holders** = customers who hold the product with a balance above 0. Zero-balance accounts are open but unused. Q2 uses the same rule.
-
-### Total balance by category
+### By category
 
 | Rank | Category | Holders | Total balance (Rp Bn) | Share |
 |---|---|---|---|---|
@@ -32,35 +27,28 @@ The measure is **total balance** = the sum of `porto.amount` over all products. 
 
 <!-- chart: q1_balance_by_category -->
 
+LOAN is more than twice FUNDING. The other three categories together are under 4 %.
+
 > dbt model: [fct_revenue_by_category.sql](ocbc_dbt/models/mart/fct_revenue_by_category.sql)
 
-### Products within LOAN (top 5)
+### By product (top 5 of 72)
 
-| Rank | Product | Holders | Total balance (Rp Bn) | Share of LOAN |
-|---|---|---|---|---|
-| 1 | TERM LOAN | 5 | 318.1 | 20.1 % |
-| 2 | DEMAND LOAN | 3 | 290.4 | 18.4 % |
-| 3 | PIF-FLOATING | 3 | 212.2 | 13.4 % |
-| 4 | KRK EMB | 26 | 125.5 | 7.9 % |
-| 5 | KPR_KENDALI | 60 | 102.8 | 6.5 % |
+| Rank | Category | Product | Holders | Total balance (Rp Bn) | Share of total | Share of its category |
+|---|---|---|---|---|---|---|
+| 1 | FUNDING | **MULTI CURRENCY** | 37 | **535.8** | **22.4 %** | 73.3 % |
+| 2 | LOAN | TERM LOAN | 5 | 318.1 | 13.3 % | 20.1 % |
+| 3 | LOAN | DEMAND LOAN | 3 | 290.4 | 12.1 % | 18.4 % |
+| 4 | LOAN | PIF-FLOATING | 3 | 212.2 | 8.9 % | 13.4 % |
+| 5 | LOAN | KRK EMB | 26 | 125.5 | 5.2 % | 7.9 % |
 
-The top 3 loan products have only 3–5 holders each. So the product ranking inside LOAN can change if one large customer repays. The category answer (LOAN) does not depend on one customer.
+The top product is not in the top category. FUNDING keeps 73.3 % of its balance in MULTI CURRENCY. LOAN spreads its balance over many products.
 
 > dbt model: [fct_revenue_by_product.sql](ocbc_dbt/models/mart/fct_revenue_by_product.sql)
 
-### Edge case: MULTI CURRENCY
+### Limitations
 
-Across all products, the single largest balance is **MULTI CURRENCY** (FUNDING, Rp 535.8 Bn, 22.4 % of total balance, 37 holders). It is a deposit product. The bank pays interest on deposits, and its revenue from them is the spread between the loan rate and the deposit rate. The data does not show that spread. So I report MULTI CURRENCY as the **largest balance**, but not as the proven largest revenue contributor.
-
-### Why the transaction table is not used
-
-`transaction` has no product column: `transaction_method` is a channel (BRANCH, ATM, MOBILE BANKING …). The rows that look like revenue are very small: fees (`BIAYA`) Rp 6.5 jt and penalties (`DENDA`) Rp 0.7 jt, against Rp 2,394 Bn of balance. So they cannot rank products.
-
-### Limitations and next step
-
-- **Equal margin is a simplification.** Margins differ by product. With margin data (net interest margin per loan product, deposit spread, fee rates for BANCA / REKSA / ORI), I would multiply each balance by its margin to get revenue directly.
-- **Snapshot.** `porto` is a single snapshot of balances, not revenue over a period.
-- **Data quality.** 1 porto row has no product name (LOAN, Rp 18.7 jt, shown as `(UNKNOWN)`). 5 rows have no amount and count as 0. Neither changes the result.
+- **Same margin for every product.** With real margins, LOAN likely stays first, because loans usually earn the most per rupiah. The product answer could change: MULTI CURRENCY is a deposit, and the bank keeps only the spread on it.
+- **One point in time.** `porto` is a snapshot of balances, not revenue over a period.
 
 ---
 
@@ -68,38 +56,44 @@ Across all products, the single largest balance is **MULTI CURRENCY** (FUNDING, 
 
 ### Answer
 
-The question has two readings, and the data gives a different answer to each:
+- **Most used:** LOAN and FUNDING by category (15 of 18 high-income customers each). BANCA, TANDA360 and PERSONAL LOAN by product (12 of 18 each).
+- **Most typical:** **BANCA**. 66.7 % of high-income customers hold it, against 51.2 % of other customers. LOAN and FUNDING are used just as much by everyone.
 
-- **Most used:** high-income customers mostly use **LOAN and FUNDING** (83 % each). But other customers use them just as much (83–84 %). These are core products of every customer, not high-income products.
-- **Most characteristic:** **BANCA (bancassurance)** is the category that high-income customers use clearly more than others: **67 % vs 51 % (lift 1.3)**. At product level, BANCA, TANDA360 and PERSONAL LOAN tie at 67 %; BANCA has the highest lift.
+So the answer is **BANCA**, read as a direction because the group is small (18 customers).
 
-**So: BANCA is the product typical of high-income customers.** This is a directional signal from a small group (see Limitations).
+### Who counts as high income
 
-### Definition of high income
+The question doesn't define it, so I use the stated monthly income band: **more than 10 Juta** (`income_rank >= 5`), which is 18 of 100 customers.
 
-High income = stated income band **`>10 Juta` per month** or more (`income_rank >= 5`): **18 of 100 customers**, about the top 20 %. The median customer is in `>3 Juta - 5 Juta`, so this is more than 2× the median.
+| income_rank | income_band | is_high_income | customers |
+|---|---|---|---|
+| 1 | sd. 1 Juta | false | 20 |
+| 2 | >1 Juta - 3 Juta | false | 4 |
+| 3 | >3 Juta - 5 Juta | false | 51 |
+| 4 | >5 Juta - 10 Juta | false | 7 |
+| 5 | >10 Juta - 25 Juta | true | 4 |
+| 6 | >25 Juta - 50 Juta | true | 5 |
+| 7 | >50 Juta - 100 Juta | true | 3 |
+| 8 | >100 Juta | true | 6 |
 
-> dbt model: [dim_customer.sql](ocbc_dbt/models/mart/dim_customer.sql) (`is_high_income`)
+Half of the customers earn 3–5 Juta, so more than 10 Juta is clearly above normal and is about the top fifth. A lower line (5 Juta) adds middle-income customers. A higher line (25 Juta) leaves only 14.
 
-### Method
+```sql
+select income_rank, income_band, is_high_income, count(*) as customers
+from dbt.main.dim_customer
+group by all
+order by income_rank;
+```
 
-- **Penetration** = % of the segment's customers who hold the product with a balance above 0. "Usually used" means *how many* customers use it, not how much money is in it. Zero-balance accounts are open but unused, so they do not count.
-- **Lift** = high-income penetration ÷ other customers' penetration. Lift above 1 means high-income customers use it more than others.
-- The denominator is all 100 customers (18 high-income, 82 other). A customer with no product counts as "does not use it".
+> dbt model: [dim_customer.sql](ocbc_dbt/models/mart/dim_customer.sql)
 
-**Example (BANCA):**
+### How to read the tables
 
-| Step | Calculation | Result |
-|---|---|---|
-| High income | 12 holders ÷ 18 customers | 66.7 % |
-| Other customers | 42 holders ÷ 82 customers | 51.2 % |
-| Lift | 66.7 % ÷ 51.2 % | **1.30** |
+`high_pct` = high-income holders ÷ 18. `other_pct` = other holders ÷ 82. Lift = `high_pct` ÷ `other_pct`. A lift above 1 means high-income customers use it more. A holder has a balance above 0 (same rule as Q1).
 
-High-income customers use BANCA 1.3× as often as other customers. Lift is computed from unrounded fractions.
+### By category
 
-### Penetration by category
-
-| Category | High-income holders | High income | Other customers | Lift |
+| Category | High-income holders (of 18) | High income | Other customers | Lift |
 |---|---|---|---|---|
 | LOAN | 15 | 83.3 % | 82.9 % | 1.00 |
 | FUNDING | 15 | 83.3 % | 84.1 % | 0.99 |
@@ -109,11 +103,13 @@ High-income customers use BANCA 1.3× as often as other customers. Lift is compu
 
 <!-- chart: q2_lift_by_category -->
 
+LOAN and FUNDING are the most used, but their lift is 1.0. BANCA is the only category clearly above 1.
+
 > dbt model: [fct_high_income_usage_by_category.sql](ocbc_dbt/models/mart/fct_high_income_usage_by_category.sql)
 
-### Top products by high-income penetration
+### By product (top 7 of 64)
 
-| Category | Product | High-income holders | High income | Other customers | Lift |
+| Category | Product | High-income holders (of 18) | High income | Other customers | Lift |
 |---|---|---|---|---|---|
 | BANCA | BANCA | 12 | 66.7 % | 51.2 % | **1.30** |
 | FUNDING | TANDA360 | 12 | 66.7 % | 58.5 % | 1.14 |
@@ -123,40 +119,13 @@ High-income customers use BANCA 1.3× as often as other customers. Lift is compu
 | FUNDING | DEPOSITO03 | 10 | 55.6 % | 61.0 % | 0.91 |
 | FUNDING | DEPOSITO01 | 10 | 55.6 % | 62.2 % | 0.89 |
 
+The top three tie at 12 of 18. BANCA has the highest lift. I skip lift for small products: a lift of 9.11 from 2 customers (KMG_KENDALI) says little.
+
 > dbt model: [fct_high_income_usage_by_product.sql](ocbc_dbt/models/mart/fct_high_income_usage_by_product.sql)
 
 ### Limitations
 
-- **Small group.** 18 high-income customers: one customer moves the percentage by 5.6 points. The BANCA gap is about 3 customers, so I treat it as a directional signal, not a proven fact.
-- **Product use barely differs by income** in this sample. Apart from BANCA, all lifts are between 0.9 and 1.1.
-- **Snapshot.** The portfolio is a single snapshot.
+- **Small group.** With 18 customers, one customer moves a percentage by 5.6 points. The BANCA gap is about 3 customers.
+- **One point in time.** The portfolio is a snapshot.
 
-**Business angle:** bancassurance is a natural entry point for wealth offers to high-income customers. Re-test on the full customer base before targeting campaigns on it.
-
----
-
-## How to run
-
-From `solution/part_2/`:
-
-| Command | What it does |
-|---|---|
-| `make install` | Create `.venv` with DuckDB and dbt. |
-| `make data` | Split the workbook `dataset/raw/AE Test_1126.xlsx` into `dataset/transaction.csv`, `profile.csv`, `porto.csv`. Optional: the CSV files are already there. |
-| `make dbt` | Build the dbt models and run all tests into `dbt.duckdb`. |
-| `make answers` | Run `make dbt`, then print the 4 fact tables (the answers). |
-| `make ui` | Open the DuckDB UI with `dbt.duckdb` attached as `dbt`. Stop it before `make dbt` (DuckDB allows one writer). |
-
-Model lineage (`raw → staging → mart`):
-
-```
-raw.profile ─► stg_profile ─► dim_customer ─┐
-                                            ├─► fct_high_income_usage_by_category
-raw.porto   ─► stg_porto ──┬────────────────┘   fct_high_income_usage_by_product
-                           ├─► fct_revenue_by_category
-                           └─► fct_revenue_by_product
-```
-
-- **Staging** cleans the data: renames `customerid` to `customer_id`, trims text, maps the income band to `income_rank` (1–8), sets a missing product to `(UNKNOWN)` and a missing amount to 0.
-- **Mart** holds `dim_customer` (one row per customer, with `is_high_income`) and the 4 fact tables, one per answer table.
-- `raw.transaction` is declared as a source but not used (see Q1).
+**What the bank could do:** use bancassurance as a way in for wealth offers to high-income customers, after re-checking it on the full customer base.
