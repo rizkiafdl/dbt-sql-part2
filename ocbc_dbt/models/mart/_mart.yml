@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: One row per profile customer. is_high_income = income_rank >= 5 ('>10 Juta' per month or higher).
+    columns:
+      - name: income_rank
+        description: Fails not_null if a new, unmapped income band appears.
+        data_tests: [not_null]
+
+  - name: fct_revenue_by_category
+    description: Q1. Total balance per category. Revenue = balance x equal margin, so it ranks the same as balance.
+    columns:
+      - name: product_category
+        data_tests: [unique]
+
+  - name: fct_revenue_by_product
+    description: Q1. Total balance per (product_category, product). Same assumption as fct_revenue_by_category.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "product_category || '|' || product"
+
+  - name: fct_high_income_usage_by_category
+    description: Q2. % of high-income (income_rank >= 5) vs other customers using each category (amount > 0), and lift.
+    columns:
+      - name: product_category
+        data_tests: [unique]
+
+  - name: fct_high_income_usage_by_product
+    description: Q2. Same as fct_high_income_usage_by_category, per (product_category, product).
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "product_category || '|' || product"

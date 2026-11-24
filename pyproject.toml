@@ -1,0 +1,9 @@
+[project]
+name = "ocbc-part2"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "dbt-core>=1.12.7",
+    "dbt-duckdb>=1.11.1",
+    "duckdb==2.0.0",  # pinned: the DuckDB UI extension is not yet published for 2.0.1
+]

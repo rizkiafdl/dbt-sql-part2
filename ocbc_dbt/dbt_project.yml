@@ -1,0 +1,12 @@
+name: ocbc_dbt
+version: "1.0.0"
+config-version: 2
+profile: ocbc_dbt
+
+model-paths: ["models"]
+
+models:
+  ocbc_dbt:
+    # Tables, not views: dbt.duckdb stays readable (DuckDB UI, docs_compile)
+    # without re-reading the CSV paths, which are relative to solution/part_2/.
+    +materialized: table

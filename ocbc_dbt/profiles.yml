@@ -1,0 +1,9 @@
+# Local profile shipped with the project. Use: --profiles-dir ocbc_dbt
+# Paths are relative to the working directory: run dbt from solution/part_2/ (make dbt).
+ocbc_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: dbt.duckdb
+      threads: 4
