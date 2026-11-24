@@ -31,17 +31,17 @@ LOAN is more than twice FUNDING. The other three categories together are under 4
 
 > dbt model: [fct_revenue_by_category.sql](ocbc_dbt/models/mart/fct_revenue_by_category.sql)
 
-### By product (top 5 of 72)
+### By product (top 5 of 69)
 
-| Rank | Category | Product | Holders | Total balance (Rp Bn) | Share of total | Share of its category |
-|---|---|---|---|---|---|---|
-| 1 | FUNDING | **MULTI CURRENCY** | 37 | **535.8** | **22.4 %** | 73.3 % |
-| 2 | LOAN | TERM LOAN | 5 | 318.1 | 13.3 % | 20.1 % |
-| 3 | LOAN | DEMAND LOAN | 3 | 290.4 | 12.1 % | 18.4 % |
-| 4 | LOAN | PIF-FLOATING | 3 | 212.2 | 8.9 % | 13.4 % |
-| 5 | LOAN | KRK EMB | 26 | 125.5 | 5.2 % | 7.9 % |
+| Rank | Product | Holders | Total balance (Rp Bn) | Share |
+|---|---|---|---|---|
+| 1 | **MULTI CURRENCY** | 37 | **535.8** | **22.4 %** |
+| 2 | TERM LOAN | 5 | 318.1 | 13.3 % |
+| 3 | DEMAND LOAN | 3 | 290.4 | 12.1 % |
+| 4 | PIF-FLOATING | 3 | 212.2 | 8.9 % |
+| 5 | KRK EMB | 26 | 125.5 | 5.2 % |
 
-The top product is not in the top category. FUNDING keeps 73.3 % of its balance in MULTI CURRENCY. LOAN spreads its balance over many products.
+The top product is not in the top category. MULTI CURRENCY is a FUNDING product. LOAN spreads its balance over many products.
 
 > dbt model: [fct_revenue_by_product.sql](ocbc_dbt/models/mart/fct_revenue_by_product.sql)
 
@@ -107,17 +107,17 @@ LOAN and FUNDING are the most used, but their lift is 1.0. BANCA is the only cat
 
 > dbt model: [fct_high_income_usage_by_category.sql](ocbc_dbt/models/mart/fct_high_income_usage_by_category.sql)
 
-### By product (top 7 of 64)
+### By product (top 7 of 63)
 
-| Category | Product | High-income holders (of 18) | High income | Other customers | Lift |
-|---|---|---|---|---|---|
-| BANCA | BANCA | 12 | 66.7 % | 51.2 % | **1.30** |
-| FUNDING | TANDA360 | 12 | 66.7 % | 58.5 % | 1.14 |
-| LOAN | PERSONAL LOAN | 12 | 66.7 % | 59.8 % | 1.12 |
-| LOAN | KPR_KENDALI | 11 | 61.1 % | 59.8 % | 1.02 |
-| FUNDING | TABSYA | 10 | 55.6 % | 53.7 % | 1.04 |
-| FUNDING | DEPOSITO03 | 10 | 55.6 % | 61.0 % | 0.91 |
-| FUNDING | DEPOSITO01 | 10 | 55.6 % | 62.2 % | 0.89 |
+| Product | High-income holders (of 18) | High income | Other customers | Lift |
+|---|---|---|---|---|
+| BANCA | 12 | 66.7 % | 51.2 % | **1.30** |
+| TANDA360 | 12 | 66.7 % | 58.5 % | 1.14 |
+| PERSONAL LOAN | 12 | 66.7 % | 59.8 % | 1.12 |
+| KPR_KENDALI | 11 | 61.1 % | 59.8 % | 1.02 |
+| TABSYA | 10 | 55.6 % | 53.7 % | 1.04 |
+| DEPOSITO03 | 10 | 55.6 % | 61.0 % | 0.91 |
+| DEPOSITO01 | 10 | 55.6 % | 62.2 % | 0.89 |
 
 The top three tie at 12 of 18. BANCA has the highest lift. I skip lift for small products: a lift of 9.11 from 2 customers (KMG_KENDALI) says little.
 

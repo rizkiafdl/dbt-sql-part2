@@ -1,8 +1,3 @@
--- Q2 answer: share of high-income vs other customers who use each product category.
--- Uses = holds a product of the category with amount > 0.
--- Denominators = all customers of the segment in dim_customer (18 high / 82 other),
--- so customers with no product count as "does not use".
--- lift = high share / other share (1.0 = used equally).
 with segment_size as (
     select
         count(*) filter (where is_high_income)     as high_customers,

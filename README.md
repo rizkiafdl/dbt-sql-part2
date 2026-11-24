@@ -89,7 +89,7 @@ Open http://localhost:4213. The models are attached as `dbt.main`, so write quer
 from dbt.main.fct_revenue_by_category;
 
 from dbt.main.fct_high_income_usage_by_product
-where product_category = 'BANCA';
+where product = 'BANCA';
 
 -- the raw CSV files work too
 from 'dataset/porto.csv' limit 10;

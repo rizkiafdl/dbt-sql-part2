@@ -1,6 +1,3 @@
--- Q1 answer: total balance per product category.
--- Revenue = balance x margin, equal margin for every product, so revenue ranks the same as balance.
--- holders = customers with amount > 0 (same rule as the Q2 facts).
 with by_category as (
     select
         product_category,

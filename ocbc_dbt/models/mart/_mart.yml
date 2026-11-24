@@ -12,10 +12,9 @@ models:
         data_tests: [unique]
 
   - name: fct_revenue_by_product
-    data_tests:
-      - unique:
-          arguments:
-            column_name: "product_category || '|' || product"
+    columns:
+      - name: product
+        data_tests: [unique]
 
   - name: fct_high_income_usage_by_category
     columns:
@@ -23,7 +22,6 @@ models:
         data_tests: [unique]
 
   - name: fct_high_income_usage_by_product
-    data_tests:
-      - unique:
-          arguments:
-            column_name: "product_category || '|' || product"
+    columns:
+      - name: product
+        data_tests: [unique]
